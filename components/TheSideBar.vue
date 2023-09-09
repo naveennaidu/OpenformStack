@@ -4,19 +4,42 @@
     <UVerticalNavigation :links="links" />
     <div>
       <div
-        class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 pl-2 mt-4"
+        class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 pl-2 mt-8"
       >
         WORKSPACES
       </div>
-      <div
-        v-for="workspace in workspaces"
-        :key="workspace.id"
-        class="cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-800/80"
-      >
-        <div class="text-sm py-1 ml-4">
-          {{ workspace.name }}
+      <div v-for="workspace in workspaces" :key="workspace.id">
+        <div
+          class="group text-sm cursor-pointer pl-4 hover:bg-gray-100 hover:dark:bg-gray-800/80 rounded mb-0.5 flex items-center justify-between"
+          :class="{
+            'bg-gray-100 dark:bg-gray-800':
+              workspace.id === useRoute().params.workspaceId,
+          }"
+          @click="useRouter().push(`/workspaces/${workspace.id}`)"
+        >
+          <div>
+            {{ workspace.name }}
+          </div>
+
+          <UButton
+            icon="i-heroicons-plus"
+            color="gray"
+            variant="ghost"
+            size="xs"
+            class="invisible group-hover:visible"
+            @click.stop="createForm(workspace.id)"
+          />
         </div>
-        <div v-for="form in workspace.forms" :key="form.id">
+        <div
+          v-for="form in workspace.forms"
+          :key="form.id"
+          class="pl-8 text-sm py-1 cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-800/80 rounded mb-0.5"
+          :class="{
+            'bg-gray-100 dark:bg-gray-800':
+              form.id === useRoute().params.formId,
+          }"
+          @click="useRouter().push(`/forms/${form.id}`)"
+        >
           {{ form.name }}
         </div>
       </div>
@@ -34,6 +57,9 @@
     </UButton>
     <UModal v-model="showWorkspace">
       <WorkspaceForm @close="closeWorkspace" />
+    </UModal>
+    <UModal v-model="showHeadlessForm">
+      <HeadlessForm :workspace-id="workspaceId" @close="closeForm" />
     </UModal>
   </div>
 </template>
@@ -75,6 +101,29 @@ function closeWorkspace(workspace?: Workspace) {
 
   if (workspace) {
     workspaces.value.push({ ...workspace, forms: [] });
+  }
+}
+
+// form
+const showHeadlessForm = ref(false);
+const workspaceId = ref("");
+function createForm(id: string) {
+  workspaceId.value = id;
+  showHeadlessForm.value = true;
+}
+
+function closeForm(form?: Form) {
+  showHeadlessForm.value = false;
+  workspaceId.value = "";
+  console.log(form);
+
+  if (form) {
+    const workspace = workspaces.value.find(
+      (workspace) => workspace.id === form.workspaceId
+    );
+    if (workspace) {
+      workspace.forms.push(form);
+    }
   }
 }
 </script>

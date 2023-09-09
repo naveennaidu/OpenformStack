@@ -66,6 +66,7 @@
 
 <script setup lang="ts">
 import { Workspace, Form } from "@prisma/client";
+import { WorkspaceWithForms } from "~/types";
 
 const links = [
   {
@@ -79,7 +80,7 @@ const links = [
     to: "/settings",
   },
 ];
-type WorkspaceWithForms = Workspace & { forms: Form[] };
+
 const workspaces = ref<WorkspaceWithForms[]>([]);
 const { data } = await useFetch("/api/workspaces");
 workspaces.value =
@@ -95,12 +96,12 @@ workspaces.value =
   })) ?? [];
 // workspace form
 const showWorkspace = ref(false);
-function closeWorkspace(workspace?: Workspace) {
+async function closeWorkspace(workspace?: Workspace) {
   showWorkspace.value = false;
-  console.log(workspace);
 
   if (workspace) {
     workspaces.value.push({ ...workspace, forms: [] });
+    await useRouter().push(`/workspaces/${workspace.id}`);
   }
 }
 
@@ -112,7 +113,7 @@ function createForm(id: string) {
   showHeadlessForm.value = true;
 }
 
-function closeForm(form?: Form) {
+async function closeForm(form?: Form) {
   showHeadlessForm.value = false;
   workspaceId.value = "";
   console.log(form);
@@ -123,6 +124,7 @@ function closeForm(form?: Form) {
     );
     if (workspace) {
       workspace.forms.push(form);
+      await useRouter().push(`/forms/${form.id}`);
     }
   }
 }

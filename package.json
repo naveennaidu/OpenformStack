@@ -15,6 +15,7 @@
     "@nuxt/devtools": "latest",
     "@nuxt/ui": "^2.8.0",
     "@sidebase/nuxt-auth": "^0.6.0-beta.5",
+    "dayjs-nuxt": "^1.1.2",
     "nuxt": "^3.7.1",
     "prisma": "^5.2.0"
   },

@@ -24,6 +24,9 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
+    include: {
+      forms: true,
+    },
   });
   if (!workspace) {
     throw createError({ statusMessage: "Not Found", statusCode: 404 });

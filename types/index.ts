@@ -1,15 +1,3 @@
-export interface Workspace {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  forms: Form[];
-}
+import { Form, Workspace } from "@prisma/client";
 
-export interface Form {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  workspaceId: string;
-}
+export type WorkspaceWithForms = Workspace & { forms: Form[] };

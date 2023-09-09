@@ -102,6 +102,10 @@
             </UButton>
           </div>
         </div>
+        <div v-if="item.key === 'settings'">
+          <div>Email notifications</div>
+          <div>Self Email notification settings here</div>
+        </div>
       </template>
     </UTabs>
   </div>
@@ -139,6 +143,10 @@ const tabs = [
   {
     key: "setup",
     label: "Setup",
+  },
+  {
+    key: "settings",
+    label: "Settings",
   },
 ];
 </script>

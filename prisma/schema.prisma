@@ -38,14 +38,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime    @default(now())
   account       Account[]
   sessions      Session[]
+  workspaces    Workspace[] @relation("UserToWorkspace")
 }
 
 model VerificationToken {
@@ -54,4 +55,31 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]   @relation("UserToWorkspace")
+  forms     Form[]
+}
+
+model Form {
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+  submissions Submission[]
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  data      Json
+  form      Form     @relation(fields: [formId], references: [id])
+  formId    String
 }

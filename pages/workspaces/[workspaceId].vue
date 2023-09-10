@@ -8,7 +8,7 @@
         Create Form
       </UButton>
     </div>
-    <div class="grid grid-cols-4 gap-2">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
       <UCard
         v-for="form in data?.workspace.forms"
         :key="form.id"
@@ -19,7 +19,8 @@
         <div class="text-lg font-medium">
           {{ form.name }}
         </div>
-        <div class="flex items-center dark:text-gray-400 text-gray-600">
+        <div class="dark:text-gray-400 text-gray-600">
+          <div>Submissions: {{ form.submissions.length }}</div>
           <div class="text-sm">
             Last updated:
             {{ dayjs(form.updatedAt).format("MMM DD, YYYY HH:mm") }}

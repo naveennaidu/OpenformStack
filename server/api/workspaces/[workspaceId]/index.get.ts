@@ -25,7 +25,16 @@ export default defineEventHandler(async (event) => {
       },
     },
     include: {
-      forms: true,
+      forms: {
+        include: {
+          submissions: {
+            select: {
+              id: true,
+              createdAt: true,
+            },
+          },
+        },
+      },
     },
   });
   if (!workspace) {

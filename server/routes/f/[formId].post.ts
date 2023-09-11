@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
       .map((user) => user.email)
       .filter((email): email is string => Boolean(email));
     await resend.emails.send({
-      from: `Headless Forms <${useRuntimeConfig().public.FROM_MAIL}>`,
+      from: `OpenformStack <${useRuntimeConfig().public.FROM_MAIL}>`,
       to: userEmails,
       subject: `New submission for ${form.name}`,
       html: `

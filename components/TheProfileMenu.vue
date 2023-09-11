@@ -8,7 +8,9 @@
   >
     <UButton color="gray" variant="ghost" class="flex items-center w-full">
       <UAvatar :src="user.image" :alt="user.name" size="xs" />
-      <span class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+      <span
+        class="ml-2 text-sm font-medium text-gray-900 dark:text-white truncate"
+      >
         {{ user.name }}
       </span>
     </UButton>

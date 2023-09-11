@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@sidebase/nuxt-auth", "dayjs-nuxt"],
+  modules: ["@nuxt/ui", "@sidebase/nuxt-auth", "dayjs-nuxt", "@pinia/nuxt"],
   runtimeConfig: {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     API_ROUTE_SECRET: process.env.API_ROUTE_SECRET,
@@ -11,5 +11,8 @@ export default defineNuxtConfig({
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
       BASE_URL: process.env.BASE_URL,
     },
+  },
+  pinia: {
+    autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
   },
 });

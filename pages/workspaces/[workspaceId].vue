@@ -4,7 +4,10 @@
       <h1 class="text-2xl font-medium">
         {{ data?.workspace.name }}
       </h1>
-      <UButton icon="i-heroicons-plus" @click="showHeadlessForm = true">
+      <UButton
+        icon="i-heroicons-plus"
+        @click="formModalWorkspaceId = workspaceId"
+      >
         Create Form
       </UButton>
     </div>
@@ -28,14 +31,12 @@
         </div>
       </UCard>
     </div>
-    <UModal v-model="showHeadlessForm">
-      <HeadlessForm :workspace-id="workspaceId" @close="closeForm" />
-    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Form, Workspace } from "@prisma/client";
+import { storeToRefs } from "pinia";
+import { useWorkspaceStore } from "~/store/workspace";
 import { WorkspaceWithForms } from "~/types";
 
 definePageMeta({
@@ -48,14 +49,7 @@ const workspace = ref<WorkspaceWithForms | undefined>(undefined);
 const { data } = await useFetch(`/api/workspaces/${workspaceId.value}`);
 workspace.value = data.value?.workspace as WorkspaceWithForms | undefined;
 
-const showHeadlessForm = ref(false);
-async function closeForm(form?: Form) {
-  showHeadlessForm.value = false;
-
-  if (form) {
-    await useRouter().push(`/forms/${form.id}`);
-  }
-}
+const { formModalWorkspaceId } = storeToRefs(useWorkspaceStore());
 </script>
 
 <style scoped></style>

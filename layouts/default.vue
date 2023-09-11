@@ -2,7 +2,7 @@
   <div class="flex h-full">
     <TheSideBar />
     <div class="w-full">
-      <div class="p-4">
+      <div class="p-4 h-screen overflow-auto">
         <slot />
         <div class="absolute top-1 right-1">
           <UButton

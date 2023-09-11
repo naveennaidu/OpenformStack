@@ -6,6 +6,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "vercel-build": "prisma generate && prisma migrate deploy && nuxt build",
     "postinstall": "nuxt prepare",
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:migrate:generate": "npx prisma generate",

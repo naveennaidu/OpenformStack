@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     public: {
       FROM_MAIL: process.env.FROM_MAIL,
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+      BASE_URL: process.env.BASE_URL,
     },
   },
 });

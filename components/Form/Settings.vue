@@ -89,6 +89,8 @@
 </template>
 
 <script setup lang="ts">
+import { useWorkspaceStore } from "~/store/workspace";
+
 const props = defineProps({
   form: {
     type: Object,
@@ -108,12 +110,14 @@ onMounted(() => {
   formData.value.selfEmailNotification = props.form.selfEmailNotification;
 });
 
+const workspaceStore = useWorkspaceStore();
+
 const generalLoading = ref(false);
 async function updateGeneralForm() {
   generalLoading.value = true;
-  await useFetch(`/api/forms/${props.form.id}`, {
-    method: "PUT",
-    body: JSON.stringify(formData.value),
+  await workspaceStore.updateForm(props.form.id, {
+    name: formData.value.name,
+    closed: formData.value.closed,
   });
   generalLoading.value = false;
 }
@@ -121,11 +125,8 @@ async function updateGeneralForm() {
 const notificationLoading = ref(false);
 async function updateNotificationForm() {
   notificationLoading.value = true;
-  await useFetch(`/api/forms/${props.form.id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      selfEmailNotification: formData.value.selfEmailNotification,
-    }),
+  await workspaceStore.updateForm(props.form.id, {
+    selfEmailNotification: formData.value.selfEmailNotification,
   });
   notificationLoading.value = false;
 }

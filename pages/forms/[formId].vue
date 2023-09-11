@@ -1,7 +1,7 @@
 <template>
   <div class="p-4">
     <h1 class="text-2xl font-medium">
-      {{ form?.form.name }}
+      {{ form?.name }}
     </h1>
 
     <UTabs v-model="selectedTab" :items="tabs" class="mt-4">
@@ -20,7 +20,7 @@
             />
           </div>
           <div v-if="item.key === 'settings'">
-            <FormSettings v-if="form" :form="form.form" />
+            <FormSettings v-if="form" :form="form" />
           </div>
         </div>
       </template>
@@ -29,6 +29,9 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { useWorkspaceStore } from "~/store/workspace";
+
 definePageMeta({ middleware: "auth" });
 
 const route = useRoute();
@@ -50,7 +53,17 @@ const selectedTab = computed({
 });
 
 const formId = computed(() => useRoute().params.formId as string);
-const { data: form, error } = await useFetch(`/api/forms/${formId.value}`);
+const { workspaceWithForms } = storeToRefs(useWorkspaceStore());
+
+const form = computed(() => {
+  for (const workspace of workspaceWithForms.value) {
+    const foundForm = workspace.forms.find((form) => form.id === formId.value);
+    if (foundForm) {
+      return foundForm;
+    }
+  }
+  return undefined;
+});
 
 // submissions
 const { data: submissions } = await useFetch(

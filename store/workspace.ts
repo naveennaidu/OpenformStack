@@ -59,5 +59,29 @@ export const useWorkspaceStore = defineStore("workspace", {
         navigateTo(`/forms/${data.value.form.id}`);
       }
     },
+
+    async updateForm(id: string, body: any) {
+      const { data } = await useFetch(`/api/forms/${id}`, {
+        method: "PUT",
+        body,
+      });
+      if (data.value) {
+        const workspace = this.workspaceWithForms.find(
+          (workspace) => workspace.id === data.value?.form.workspaceId
+        );
+        if (workspace) {
+          const formIndex = workspace.forms.findIndex(
+            (form) => form.id === data.value?.form.id
+          );
+          if (formIndex !== -1) {
+            workspace.forms[formIndex] = {
+              ...data.value.form,
+              createdAt: new Date(data.value.form.createdAt),
+              updatedAt: new Date(data.value.form.updatedAt),
+            };
+          }
+        }
+      }
+    },
   },
 });

@@ -33,4 +33,18 @@ export default NuxtAuthHandler({
       return token;
     },
   },
+  events: {
+    createUser: async (message) => {
+      await prisma.workspace.create({
+        data: {
+          name: "My workspace",
+          users: {
+            connect: {
+              id: message.user.id,
+            },
+          },
+        },
+      });
+    },
+  },
 });

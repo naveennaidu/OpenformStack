@@ -22,7 +22,10 @@
         </UButton>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 my-4">
+      <div
+        v-if="workspace.forms.length > 0"
+        class="grid grid-cols-2 md:grid-cols-3 gap-4 my-4"
+      >
         <UCard
           v-for="form in workspace.forms"
           :key="form.id"
@@ -34,13 +37,31 @@
             {{ form.name }}
           </div>
           <div class="dark:text-gray-400 text-gray-600">
-            <!-- <div>Submissions: {{ form.submissions.length }}</div> -->
             <div class="text-sm">
               Last updated:
               {{ dayjs(form.updatedAt).format("MMM DD, YYYY HH:mm") }}
             </div>
           </div>
         </UCard>
+      </div>
+      <div v-else>
+        <div class="flex items-center justify-center h-32 mt-8">
+          <div class="text-gray-400 text-center">
+            <UIcon name="i-heroicons-document-text" class="h-12 w-12" />
+            <p class="mt-2 text-sm">You don't have any forms yet.</p>
+            <p class="mt-2 text-sm">
+              <UButton
+                icon="i-heroicons-plus"
+                color="gray"
+                variant="ghost"
+                size="xs"
+                @click="formModalWorkspaceId = workspace.id"
+              >
+                Create Form
+              </UButton>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,6 +1,9 @@
 <template>
   <div>
+    <LpTopNav />
+
     <slot />
+    <LpFooter />
   </div>
 </template>
 

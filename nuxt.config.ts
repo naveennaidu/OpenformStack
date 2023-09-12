@@ -20,7 +20,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     routeRules: {
-      "/f/**": { cors: false },
+      "/f/**": { cors: true, headers: { "Access-Control-Allow-Origin": "*" } },
     },
   },
 });

@@ -8,6 +8,25 @@ const paramSchema = z.object({
 const resend = new Resend(useRuntimeConfig().RESEND_API_KEY);
 
 export default defineEventHandler(async (event) => {
+  handleCors(event, {
+    allowHeaders: [
+      "Contenty-Type",
+      "Accept",
+      "Origin",
+      "Referer",
+      "User-Agent",
+    ],
+    methods: ["OPTIONS", "POST"],
+    origin: "*",
+    preflight: {
+      statusCode: 204,
+    },
+  });
+  if (event.node.req.method === "OPTIONS") {
+    return null;
+  }
+  assertMethod(event, "POST");
+
   const body = await readBody(event);
   const { formId } = parseParamsAs(event, paramSchema);
   const { prisma } = event.context;

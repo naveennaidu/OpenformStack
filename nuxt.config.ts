@@ -18,4 +18,9 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "dark",
   },
+  nitro: {
+    routeRules: {
+      "/f/**": { cors: false },
+    },
+  },
 });

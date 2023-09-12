@@ -9,13 +9,7 @@ const resend = new Resend(useRuntimeConfig().RESEND_API_KEY);
 
 export default defineEventHandler(async (event) => {
   handleCors(event, {
-    allowHeaders: [
-      "Contenty-Type",
-      "Accept",
-      "Origin",
-      "Referer",
-      "User-Agent",
-    ],
+    allowHeaders: ["Content-Type", "Accept", "Origin", "Referer", "User-Agent"],
     methods: ["OPTIONS", "POST"],
     origin: "*",
     preflight: {

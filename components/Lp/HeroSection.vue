@@ -50,7 +50,7 @@
                 <LpFormCode :code="code" />
                 <UButton
                   size="2xs"
-                  class="absolute top-8 left-[148px]"
+                  class="absolute top-[8px] left-[148px]"
                   @click="continueWithGoogle"
                 >
                   Generate Endpoint

@@ -1,5 +1,7 @@
 import { z, parseParamsAs } from "@sidebase/nuxt-parse";
 import { Resend } from "resend";
+import { inngest } from "~/inngest/client";
+import { isEmail } from "~/utils";
 
 const DEFAULT_REDIRECT_URL = "https://openformstack.com/thank-you";
 
@@ -70,30 +72,30 @@ export default defineEventHandler(async (event) => {
     .filter((email): email is string => Boolean(email));
   // self email notification
   if (form.selfEmailNotification) {
-    await resend.emails.send({
-      from: `OpenformStack <${useRuntimeConfig().public.FROM_MAIL}>`,
-      to: userEmails,
-      subject: `New submission for ${form.name}`,
-      html: `
-      ${Object.entries(body)
-        .map(([key, value]) => `<div><b>${key}</b>: ${value}</div>`)
-        .join("")}
-      `,
-      ...(body.email && isEmail(body.email) ? { reply_to: body.email } : {}),
+    await inngest.send({
+      name: "app/email.selfNotification",
+      data: {
+        emails: userEmails,
+        formName: form.name,
+        body,
+      },
     });
   }
 
   // respondent email notification
   if (form.respondentEmailNotification) {
     if (body.email && isEmail(body.email)) {
-      await resend.emails.send({
-        from: `${form.fromName} <${useRuntimeConfig().public.FROM_MAIL}>`,
-        to: body.email,
-        subject: form.subject ?? "Thank you for your submission",
-        text:
-          form.message ??
-          "Thanks for reaching out! we'll get back to you as soon as possible.",
-        reply_to: userEmails,
+      await inngest.send({
+        name: "app/email.respondentNotification",
+        data: {
+          fromName: form.fromName ?? "OpenformStack",
+          to: body.email,
+          subject: form.subject ?? "Thank you for your submission",
+          message:
+            form.message ??
+            "Thanks for reaching out! we'll get back to you as soon as possible.",
+          replyTo: userEmails ?? [],
+        },
       });
     }
   }
@@ -105,9 +107,3 @@ export default defineEventHandler(async (event) => {
       : DEFAULT_REDIRECT_URL
   );
 });
-
-function isEmail(email: string) {
-  const emailRegex =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return emailRegex.test(email);
-}

@@ -1,3 +1,4 @@
-import emailNotification from "./emailNotification";
+import selfEmailNotification from "./selfEmailNotification";
+import respondentEmailNotification from "./respondentEmailNotification";
 
-export default [emailNotification];
+export default [selfEmailNotification, respondentEmailNotification];

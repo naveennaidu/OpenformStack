@@ -5,6 +5,12 @@ const bodySchema = z.object({
   name: z.string().optional(),
   closed: z.boolean().optional(),
   selfEmailNotification: z.boolean().optional(),
+  respondentEmailNotification: z.boolean().optional(),
+  fromName: z.string().nullable().optional(),
+  subject: z.string().nullable().optional(),
+  message: z.string().nullable().optional(),
+  customRedirect: z.boolean().optional(),
+  customRedirectUrl: z.string().optional(),
 });
 
 const paramSchema = z.object({
@@ -13,10 +19,7 @@ const paramSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event);
-  const { name, closed, selfEmailNotification } = await parseBodyAs(
-    event,
-    bodySchema
-  );
+  const body = await parseBodyAs(event, bodySchema);
   const { formId } = parseParamsAs(event, paramSchema);
 
   if (!session) {
@@ -36,11 +39,7 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
-    data: {
-      name,
-      closed,
-      selfEmailNotification,
-    },
+    data: body,
   });
 
   if (!form) {

@@ -67,15 +67,26 @@ model Workspace {
 }
 
 model Form {
-  id                    String       @id @default(cuid())
+  id                    String  @id @default(cuid())
   name                  String
-  closed                Boolean      @default(false)
-  selfEmailNotification Boolean      @default(true)
-  createdAt             DateTime     @default(now())
-  updatedAt             DateTime     @updatedAt
-  workspace             Workspace    @relation(fields: [workspaceId], references: [id])
-  workspaceId           String
-  submissions           Submission[]
+  closed                Boolean @default(false)
+  // send email to self when form is submitted
+  selfEmailNotification Boolean @default(true)
+
+  // send email to respondent when form is submitted
+  respondentEmailNotification Boolean @default(false)
+  fromName                    String?
+  subject                     String?
+  message                     String?
+
+  // redirect to custom url when form is submitted
+  customRedirect    Boolean      @default(false)
+  customRedirectUrl String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  workspace         Workspace    @relation(fields: [workspaceId], references: [id])
+  workspaceId       String
+  submissions       Submission[]
 }
 
 model Submission {

@@ -14,11 +14,11 @@
             Submitted at
           </th>
           <th
-            v-for="(_, key) in submissions[0].data"
-            :key="key"
+            v-for="column in columns"
+            :key="column"
             class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
           >
-            {{ key }}
+            {{ column }}
           </th>
         </tr>
       </thead>
@@ -32,11 +32,11 @@
             {{ dayjs(submission.createdAt).format("DD-MM-YYYY HH:mm") }}
           </td>
           <td
-            v-for="(_, key) in submissions[0].data"
-            :key="key"
+            v-for="column in columns"
+            :key="column"
             class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-50"
           >
-            {{ submission.data[key] }}
+            {{ submission.data[column] }}
           </td>
         </tr>
       </tbody>
@@ -54,6 +54,11 @@
 defineProps({
   submissions: {
     type: Array as PropType<any[]>,
+    required: false,
+    default: [],
+  },
+  columns: {
+    type: Array as PropType<string[]>,
     required: false,
     default: [],
   },

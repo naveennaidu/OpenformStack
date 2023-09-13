@@ -11,6 +11,7 @@
             <FormSubmissions
               v-if="submissions"
               :submissions="submissions.submissions"
+              :columns="submissions.keys"
             />
           </div>
           <div v-if="item.key === 'setup'">

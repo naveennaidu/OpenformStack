@@ -28,7 +28,16 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
-  return { submissions };
+  const result: { key: string }[] =
+    await prisma.$queryRaw`select jsonb_object_keys(data) as key from public."Submission" group by key`;
+
+  const keys = result.map((r) => r.key);
+  console.log(keys);
+
+  return { submissions, keys };
 });

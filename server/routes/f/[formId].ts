@@ -1,6 +1,8 @@
 import { z, parseParamsAs } from "@sidebase/nuxt-parse";
 import { Resend } from "resend";
 
+const DEFAULT_REDIRECT_URL = "https://openformstack.com/thank-you";
+
 const paramSchema = z.object({
   formId: z.string(),
 });
@@ -64,6 +66,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
+  // self email notification
   if (form.selfEmailNotification) {
     const userEmails = form.workspace.users
       .map((user) => user.email)
@@ -80,7 +83,30 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return {
-    success: true,
-  };
+  // respondent email notification
+  if (form.respondentEmailNotification) {
+    if (body.email && isEmail(body.email)) {
+      await resend.emails.send({
+        from: `${form.fromName} <${useRuntimeConfig().public.FROM_MAIL}>`,
+        to: body.email,
+        subject: form.subject ?? "Thank you for your submission",
+        text:
+          form.message ??
+          "Thanks for reaching out! we'll get back to you as soon as possible.",
+      });
+    }
+  }
+
+  return sendRedirect(
+    event,
+    form.customRedirect
+      ? form.customRedirectUrl ?? DEFAULT_REDIRECT_URL
+      : DEFAULT_REDIRECT_URL
+  );
 });
+
+function isEmail(email: string) {
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return emailRegex.test(email);
+}

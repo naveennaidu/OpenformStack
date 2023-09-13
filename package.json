@@ -26,6 +26,7 @@
     "@prisma/client": "5.2.0",
     "@sidebase/nuxt-parse": "^0.3.0",
     "highlight.js": "^11.8.0",
+    "inngest": "^2.6.0",
     "next-auth": "4.21.1",
     "pinia": "^2.1.6",
     "resend": "^1.0.0"

@@ -1,11 +1,9 @@
 import { z, parseParamsAs } from "@sidebase/nuxt-parse";
-import { Resend } from "resend";
+import { inngest } from "~/inngest/client";
 
 const paramSchema = z.object({
   formId: z.string(),
 });
-
-const resend = new Resend(useRuntimeConfig().RESEND_API_KEY);
 
 export default defineEventHandler(async (event) => {
   handleCors(event, {
@@ -68,15 +66,13 @@ export default defineEventHandler(async (event) => {
     const userEmails = form.workspace.users
       .map((user) => user.email)
       .filter((email): email is string => Boolean(email));
-    await resend.emails.send({
-      from: `OpenformStack <${useRuntimeConfig().public.FROM_MAIL}>`,
-      to: userEmails,
-      subject: `New submission for ${form.name}`,
-      html: `
-      ${Object.entries(body)
-        .map(([key, value]) => `<div><b>${key}</b>: ${value}</div>`)
-        .join("")}
-      `,
+    await inngest.send({
+      name: "app/email.self",
+      data: {
+        emails: userEmails,
+        formName: form.name,
+        body,
+      },
     });
   }
 

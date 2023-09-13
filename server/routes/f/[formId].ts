@@ -65,12 +65,11 @@ export default defineEventHandler(async (event) => {
       data: body,
     },
   });
-
+  const userEmails = form.workspace.users
+    .map((user) => user.email)
+    .filter((email): email is string => Boolean(email));
   // self email notification
   if (form.selfEmailNotification) {
-    const userEmails = form.workspace.users
-      .map((user) => user.email)
-      .filter((email): email is string => Boolean(email));
     await resend.emails.send({
       from: `OpenformStack <${useRuntimeConfig().public.FROM_MAIL}>`,
       to: userEmails,
@@ -80,6 +79,7 @@ export default defineEventHandler(async (event) => {
         .map(([key, value]) => `<div><b>${key}</b>: ${value}</div>`)
         .join("")}
       `,
+      ...(body.email && isEmail(body.email) ? { reply_to: body.email } : {}),
     });
   }
 
@@ -93,6 +93,7 @@ export default defineEventHandler(async (event) => {
         text:
           form.message ??
           "Thanks for reaching out! we'll get back to you as soon as possible.",
+        reply_to: userEmails,
       });
     }
   }

@@ -20,6 +20,14 @@
               :show-alert="submissions?.submissions.length === 0"
             />
           </div>
+          <div v-if="item.key === 'integrations'">
+            <FormIntegrations
+              v-if="form"
+              :form-id="formId"
+              :webbook-enabled="form.webhookEnabled"
+              :webhook-url="form.webhookUrl ?? undefined"
+            />
+          </div>
           <div v-if="item.key === 'settings'">
             <FormSettings v-if="form" :form="form" />
           </div>
@@ -79,6 +87,10 @@ const tabs = [
   {
     key: "setup",
     label: "Setup",
+  },
+  {
+    key: "integrations",
+    label: "Integrations",
   },
   {
     key: "settings",

@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
       },
     };
   }
-  await prisma.submission.create({
+  const submission = await prisma.submission.create({
     data: {
       formId,
       data: body,
@@ -98,6 +98,18 @@ export default defineEventHandler(async (event) => {
         },
       });
     }
+  }
+
+  // webhook
+  if (form.webhookEnabled && form.webhookUrl) {
+    await inngest.send({
+      name: "app/webhook",
+      data: {
+        webhookUrl: form.webhookUrl,
+        formName: form.name,
+        submission,
+      },
+    });
   }
 
   return sendRedirect(

@@ -11,6 +11,8 @@ const bodySchema = z.object({
   message: z.string().nullable().optional(),
   customRedirect: z.boolean().optional(),
   customRedirectUrl: z.string().optional(),
+  webhookEnabled: z.boolean().optional(),
+  webhookUrl: z.string().optional(),
 });
 
 const paramSchema = z.object({

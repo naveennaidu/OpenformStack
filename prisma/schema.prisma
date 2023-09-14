@@ -82,6 +82,9 @@ model Form {
   // redirect to custom url when form is submitted
   customRedirect    Boolean      @default(false)
   customRedirectUrl String?
+  // webhook url to send data to when form is submitted
+  webhookEnabled    Boolean      @default(false)
+  webhookUrl        String?
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
   workspace         Workspace    @relation(fields: [workspaceId], references: [id])

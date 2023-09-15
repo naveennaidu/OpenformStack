@@ -6,21 +6,23 @@
 
     <UTabs v-model="selectedTab" :items="tabs" class="mt-4">
       <template #item="{ item }">
-        <div class="mt-8">
+        <div>
           <div v-if="item.key === 'submissions'">
             <FormSubmissions
               v-if="submissions"
+              :form-id="formId"
               :submissions="submissions.submissions"
               :columns="submissions.keys"
+              @delete="deleteSubmissions"
             />
           </div>
-          <div v-if="item.key === 'setup'">
+          <div v-if="item.key === 'setup'" class="mt-8">
             <FormSetup
               :form-id="formId"
               :show-alert="submissions?.submissions.length === 0"
             />
           </div>
-          <div v-if="item.key === 'integrations'">
+          <div v-if="item.key === 'integrations'" class="mt-8">
             <FormIntegrations
               v-if="form"
               :form-id="formId"
@@ -28,7 +30,7 @@
               :webhook-url="form.webhookUrl ?? undefined"
             />
           </div>
-          <div v-if="item.key === 'settings'">
+          <div v-if="item.key === 'settings'" class="mt-8">
             <FormSettings v-if="form" :form="form" />
           </div>
         </div>
@@ -38,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { Submission } from "@prisma/client";
 import { storeToRefs } from "pinia";
 import { useWorkspaceStore } from "~/store/workspace";
 
@@ -75,9 +78,16 @@ const form = computed(() => {
 });
 
 // submissions
-const { data: submissions } = await useFetch(
-  `/api/forms/${formId.value}/submissions`
-);
+const submissions = ref<{ submissions: Submission[]; keys: string[] }>();
+const { data } = await useFetch(`/api/forms/${formId.value}/submissions`);
+submissions.value = {
+  submissions:
+    data.value?.submissions.map((submission) => ({
+      ...submission,
+      createdAt: new Date(submission.createdAt),
+    })) ?? [],
+  keys: data.value?.keys ?? [],
+};
 
 const tabs = [
   {
@@ -97,6 +107,14 @@ const tabs = [
     label: "Settings",
   },
 ];
+
+function deleteSubmissions(ids: string[]) {
+  if (submissions.value) {
+    submissions.value.submissions = submissions.value.submissions.filter(
+      (submission) => !ids.includes(submission.id)
+    );
+  }
+}
 </script>
 
 <style scoped></style>

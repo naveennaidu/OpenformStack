@@ -26,6 +26,7 @@
     "@pinia/nuxt": "^0.4.11",
     "@prisma/client": "5.2.0",
     "@sidebase/nuxt-parse": "^0.3.0",
+    "@vercel/analytics": "^1.0.2",
     "highlight.js": "^11.8.0",
     "inngest": "^2.6.0",
     "next-auth": "4.21.1",

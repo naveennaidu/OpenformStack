@@ -1,6 +1,8 @@
 import { z, parseParamsAs } from "@sidebase/nuxt-parse";
 import { inngest } from "~/inngest/client";
 import { isEmail } from "~/utils";
+import { kv } from "@vercel/kv";
+import { Ratelimit } from "@upstash/ratelimit";
 
 const DEFAULT_REDIRECT_URL = "https://openformstack.com/thank-you";
 
@@ -25,6 +27,28 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { formId } = parseParamsAs(event, paramSchema);
   const { prisma } = event.context;
+
+  const ip = event.headers.get("x-forwarded-for");
+  const ratelimit = new Ratelimit({
+    redis: kv,
+    // rate limit to 5 requests per 60 seconds
+    limiter: Ratelimit.slidingWindow(5, "60s"),
+  });
+
+  const { success, limit, reset, remaining } = await ratelimit.limit(
+    `ratelimit_${ip}`
+  );
+
+  if (!success) {
+    return new Response("You have reached your request limit for the day.", {
+      status: 429,
+      headers: {
+        "X-RateLimit-Limit": limit.toString(),
+        "X-RateLimit-Remaining": remaining.toString(),
+        "X-RateLimit-Reset": reset.toString(),
+      },
+    });
+  }
 
   const form = await prisma.form.findUnique({
     where: {

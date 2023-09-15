@@ -1,7 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@sidebase/nuxt-auth", "dayjs-nuxt", "@pinia/nuxt"],
+  modules: [
+    "@nuxt/ui",
+    "@sidebase/nuxt-auth",
+    "dayjs-nuxt",
+    "@pinia/nuxt",
+    "nuxt-security",
+  ],
   runtimeConfig: {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     API_ROUTE_SECRET: process.env.API_ROUTE_SECRET,
@@ -17,5 +23,16 @@ export default defineNuxtConfig({
   },
   colorMode: {
     preference: "light",
+  },
+  routeRules: {
+    "/f/:formId": {
+      security: {
+        rateLimiter: {
+          tokensPerInterval: 5,
+          interval: "hour",
+          fireImmediately: true,
+        },
+      },
+    },
   },
 });

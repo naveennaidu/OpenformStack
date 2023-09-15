@@ -1,5 +1,4 @@
 import { z, parseParamsAs } from "@sidebase/nuxt-parse";
-import { Resend } from "resend";
 import { inngest } from "~/inngest/client";
 import { isEmail } from "~/utils";
 
@@ -8,8 +7,6 @@ const DEFAULT_REDIRECT_URL = "https://openformstack.com/thank-you";
 const paramSchema = z.object({
   formId: z.string(),
 });
-
-const resend = new Resend(useRuntimeConfig().RESEND_API_KEY);
 
 export default defineEventHandler(async (event) => {
   handleCors(event, {

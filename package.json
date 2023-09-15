@@ -21,6 +21,7 @@
     "prisma": "^5.2.0"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.0.18",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@pinia/nuxt": "^0.4.11",
     "@prisma/client": "5.2.0",

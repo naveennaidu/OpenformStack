@@ -5,7 +5,9 @@
       <div class="flex items-start justify-between">
         <div class="space-y-8">
           <div>
-            <NuxtLink to="/"> OpenformStack </NuxtLink>
+            <NuxtLink class="text-gray-100 text-3xl" to="/">
+              OpenformStack
+            </NuxtLink>
             <p class="text-sm leading-6 text-gray-300">
               open source form backend
             </p>

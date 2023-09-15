@@ -1,7 +1,8 @@
 <template>
   <div>
     <LpHeroSection />
-    <!-- <LpFeatureSection /> -->
+    <LpFeatureSection />
+    <LpCta />
   </div>
 </template>
 

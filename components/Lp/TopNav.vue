@@ -5,8 +5,13 @@
       aria-label="Global"
     >
       <div class="flex lg:flex-1">
-        <NuxtLink to="/" class="-m-1.5 p-1.5">
-          <span>OpenformStack</span>
+        <NuxtLink to="/" class="-m-1.5 p-1.5 flex items-center space-x-2">
+          <img
+            class="h-10 w-auto rounded"
+            src="/logo.png"
+            alt="OpenformStack logo"
+          />
+          <span class="font-semibold text-2xl">OpenformStack</span>
         </NuxtLink>
       </div>
       <div class="flex lg:hidden">

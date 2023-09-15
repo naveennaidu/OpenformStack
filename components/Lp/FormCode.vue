@@ -11,10 +11,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  lang: {
+    type: String,
+    default: "html",
+  },
 });
 
 const highlightedCode = computed(() => {
-  return hljs.highlight(props.code, { language: "html" }).value;
+  return hljs.highlight(props.code, { language: props.lang }).value;
 });
 </script>
 

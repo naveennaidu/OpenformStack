@@ -16,6 +16,6 @@ export default defineNuxtConfig({
     autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
   },
   colorMode: {
-    preference: "dark",
+    preference: "light",
   },
 });

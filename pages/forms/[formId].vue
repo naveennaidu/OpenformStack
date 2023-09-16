@@ -8,19 +8,10 @@
       <template #item="{ item }">
         <div>
           <div v-if="item.key === 'submissions'">
-            <FormSubmissions
-              v-if="submissions"
-              :form-id="formId"
-              :submissions="submissions.submissions"
-              :columns="submissions.keys"
-              @delete="deleteSubmissions"
-            />
+            <FormSubmissions :form-id="formId" />
           </div>
           <div v-if="item.key === 'setup'" class="mt-8">
-            <FormSetup
-              :form-id="formId"
-              :show-alert="submissions?.submissions.length === 0"
-            />
+            <FormSetup :form-id="formId" />
           </div>
           <div v-if="item.key === 'integrations'" class="mt-8">
             <FormIntegrations
@@ -40,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { Submission } from "@prisma/client";
 import { storeToRefs } from "pinia";
 import { useWorkspaceStore } from "~/store/workspace";
 
@@ -77,18 +67,6 @@ const form = computed(() => {
   return undefined;
 });
 
-// submissions
-const submissions = ref<{ submissions: Submission[]; keys: string[] }>();
-const { data } = await useFetch(`/api/forms/${formId.value}/submissions`);
-submissions.value = {
-  submissions:
-    data.value?.submissions.map((submission) => ({
-      ...submission,
-      createdAt: new Date(submission.createdAt),
-    })) ?? [],
-  keys: data.value?.keys ?? [],
-};
-
 const tabs = [
   {
     key: "submissions",
@@ -107,14 +85,6 @@ const tabs = [
     label: "Settings",
   },
 ];
-
-function deleteSubmissions(ids: string[]) {
-  if (submissions.value) {
-    submissions.value.submissions = submissions.value.submissions.filter(
-      (submission) => !ids.includes(submission.id)
-    );
-  }
-}
 </script>
 
 <style scoped></style>

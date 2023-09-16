@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="text-2xl font-medium">Integrations</h1>
-    <p class="text-sm text-gray-200">
+    <p class="text-sm text-gray-600 dark:text-gray-200">
       Connect OpenformStack with your favourite integrations
     </p>
     <div class="mt-4 grid grid-cols-3">

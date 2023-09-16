@@ -1,18 +1,17 @@
 <template>
   <div>
-    <div
-      class="flex pb-2"
-      :class="selected.length > 0 ? 'visible' : 'invisible'"
-    >
+    <div class="flex items-center justify-between pb-2">
       <UButton
         icon="i-heroicons-trash"
         color="red"
         size="xs"
         :loading="deleting"
+        :class="selected.length > 0 ? 'visible' : 'invisible'"
         @click="deleteSelected"
       >
         Delete
       </UButton>
+      <USelectMenu v-model="view" :options="['Inbox', 'Spam']"> </USelectMenu>
     </div>
     <div
       class="overflow-hidden shadow ring-1 ring-black dark:ring-gray-700 ring-opacity-5 sm:rounded-lg"
@@ -76,6 +75,7 @@ async function fetchSubmissions() {
     query: {
       skip: (page.value - 1) * pageCount.value,
       take: pageCount.value,
+      isSpam: view.value === "Spam",
     },
   });
   submissionObject.value = {
@@ -175,6 +175,15 @@ function deleteSubmissions(ids: string[]) {
       );
   }
 }
+
+// View
+const view = ref("Inbox");
+watch(
+  () => view.value,
+  async (_) => {
+    await fetchSubmissions();
+  }
+);
 </script>
 
 <style scoped></style>

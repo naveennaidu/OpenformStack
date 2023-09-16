@@ -82,17 +82,45 @@ export default defineEventHandler(async (event) => {
       },
     };
   }
+  const headers = event.headers;
+  const contentType = headers.get("content-type") || "";
+
+  // Body Parsing
+  let parsedBody: any;
+  if (contentType.includes("application/json")) {
+    parsedBody = typeof body === "object" ? body : JSON.parse(body);
+  } else if (contentType.includes("application/x-www-form-urlencoded")) {
+    parsedBody = Object.fromEntries(new URLSearchParams(body).entries());
+  } else {
+    setResponseStatus(event, 406);
+    setResponseHeader(event, "Content-Type", "application/json");
+    return {
+      error: {
+        code: "INVALID_CONTENT_TYPE",
+        message:
+          "Accepts only application/json or application/x-www-form-urlencoded",
+      },
+    };
+  }
+
+  // Check for spam
+  const isSpam = Object.entries(parsedBody).some(
+    ([key, value]) => key.startsWith("_") && value
+  );
+
   const submission = await prisma.submission.create({
     data: {
       formId,
       data: body,
+      isSpam,
     },
   });
+
   const userEmails = form.workspace.users
     .map((user) => user.email)
     .filter((email): email is string => Boolean(email));
   // self email notification
-  if (form.selfEmailNotification) {
+  if (form.selfEmailNotification && !isSpam) {
     await inngest.send({
       name: "app/email.selfNotification",
       data: {
@@ -104,7 +132,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // respondent email notification
-  if (form.respondentEmailNotification) {
+  if (form.respondentEmailNotification && !isSpam) {
     if (body.email && isEmail(body.email)) {
       await inngest.send({
         name: "app/email.respondentNotification",
@@ -122,7 +150,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // webhook
-  if (form.webhookEnabled && form.webhookUrl) {
+  if (form.webhookEnabled && form.webhookUrl && !isSpam) {
     await inngest.send({
       name: "app/webhook",
       data: {

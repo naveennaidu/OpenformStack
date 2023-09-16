@@ -96,6 +96,7 @@ model Submission {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   data      Json
+  isSpam    Boolean  @default(false)
   form      Form     @relation(fields: [formId], references: [id])
   formId    String
 }

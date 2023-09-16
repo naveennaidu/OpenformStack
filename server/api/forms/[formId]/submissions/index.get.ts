@@ -8,12 +8,17 @@ const paramSchema = z.object({
 const querySchema = z.object({
   skip: z.string().optional().default("0").transform(Number),
   take: z.string().optional().default("10").transform(Number),
+  isSpam: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((v) => v === "true"),
 });
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event);
   const { formId } = parseParamsAs(event, paramSchema);
-  const { skip, take } = parseQueryAs(event, querySchema);
+  const { skip, take, isSpam } = parseQueryAs(event, querySchema);
   if (!session) {
     throw createError({ statusMessage: "Unauthenticated", statusCode: 403 });
   }
@@ -23,6 +28,7 @@ export default defineEventHandler(async (event) => {
   const query = {
     where: {
       formId,
+      isSpam,
       form: {
         workspace: {
           users: {
@@ -44,10 +50,16 @@ export default defineEventHandler(async (event) => {
       take: take,
     }),
     prisma.submission.count(query),
-    prisma.$queryRaw`select jsonb_object_keys(data) as key from public."Submission" group by key`,
+    prisma.$queryRaw`SELECT jsonb_object_keys(data) AS key FROM public."Submission" WHERE "formId"=${formId} GROUP BY key`,
   ]);
 
-  const keys = (result as any).map((r: any) => r.key) as string[];
+  const keys = ((result as any).map((r: any) => r.key) as string[]).filter(
+    (key) => !key.startsWith("_")
+  );
 
-  return { submissions, keys, pagination: { skip, take, total } };
+  return {
+    submissions,
+    keys,
+    pagination: { skip, take, total },
+  };
 });

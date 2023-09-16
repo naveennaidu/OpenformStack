@@ -1,27 +1,23 @@
 <template>
-  <div class="flex flex-col">
-    <form
-      action="http://localhost:3000/f/clmegu1ar00049vy8kr3e5cfb"
-      method="POST"
-      class="flex flex-col gap-4"
-    >
-      <input
-        type="email"
-        name="email"
-      /><!-- use this to reply visitors and prevent spam -->
-      <input type="text" name="firstName" />
-      <input type="text" name="lastName" />
-      <input type="text" name="anotherInput" />
-      <input type="hidden" name="_gotcha" /><!-- use this to prevent spam -->
-      <button type="submit">Submit</button>
-    </form>
-  </div>
+  <form @submit.prevent="submitForm" class="h-screen mt-24">
+    <input type="email" name="email" v-model="email" />
+    <button type="submit">Join Waitlist</button>
+  </form>
 </template>
 
-<script setup lang="ts">
+<script setup>
 definePageMeta({
   layout: "open",
 });
-</script>
+const email = ref("");
 
-<style scoped></style>
+async function submitForm() {
+  await fetch("http://localhost:3000/f/clmkkd6tm00009vqmq7jy5ru9", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email: email.value }),
+  });
+}
+</script>

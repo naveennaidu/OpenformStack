@@ -31,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { Submission } from "@prisma/client";
 import { storeToRefs } from "pinia";
 import { useWorkspaceStore } from "~/store/workspace";
 

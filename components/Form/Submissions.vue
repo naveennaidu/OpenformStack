@@ -18,12 +18,13 @@
       class="overflow-hidden shadow ring-1 ring-black dark:ring-gray-700 ring-opacity-5 sm:rounded-lg"
     >
       <UTable
-        v-if="submissions.length > 0"
+        v-if="submissionObject && submissionObject.submissions.length > 0"
         v-model="selected"
         :columns="tableCols"
         :rows="tableRows"
         @select="onSelect"
-      ></UTable>
+      />
+
       <div v-else class="flex flex-col items-center py-10">
         <div class="flex items-center justify-center h-32 my-8">
           <div class="text-gray-400 text-center">
@@ -36,40 +37,83 @@
         </UButton>
       </div>
     </div>
+    <div class="flex items-center justify-between space-x-2 mt-2">
+      <div class="text-gray-400">
+        Total: {{ submissionObject?.pagination.total ?? 0 }}
+      </div>
+      <UPagination
+        v-model="page"
+        :page-count="pageCount"
+        :total="submissionObject?.pagination.total ?? 0"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Submission } from "@prisma/client";
+import { Pagination } from "~/types";
+
 const props = defineProps({
-  submissions: {
-    type: Array as PropType<any[]>,
-    required: false,
-    default: [],
-  },
-  columns: {
-    type: Array as PropType<string[]>,
-    required: false,
-    default: [],
-  },
   formId: {
     type: String,
     required: true,
   },
 });
 
-const emits = defineEmits({
-  delete: (ids: string[]) => true,
+const submissionObject = ref<{
+  submissions: Submission[];
+  keys: string[];
+  pagination: Pagination;
+}>();
+
+const page = ref(1);
+const pageCount = ref(10);
+
+async function fetchSubmissions() {
+  const { data } = await useFetch(`/api/forms/${props.formId}/submissions`, {
+    method: "GET",
+    query: {
+      skip: (page.value - 1) * pageCount.value,
+      take: pageCount.value,
+    },
+  });
+  submissionObject.value = {
+    submissions:
+      data.value?.submissions.map((submission) => ({
+        ...submission,
+        createdAt: new Date(submission.createdAt),
+      })) ?? [],
+    keys: data.value?.keys ?? [],
+    pagination: data.value?.pagination ?? {
+      skip: 0,
+      take: 10,
+      total: 0,
+    },
+  };
+}
+onMounted(async () => {
+  await nextTick();
+  await fetchSubmissions();
 });
+
+watch(
+  () => page.value,
+  async () => {
+    await fetchSubmissions();
+  }
+);
 
 const dayjs = useDayjs();
 
 const tableCols = computed(() => {
-  const cols = props.columns.map((column) => {
-    return {
-      key: column,
-      label: column,
-    };
-  });
+  const cols =
+    submissionObject.value?.keys.map((column) => {
+      return {
+        key: column,
+        label: column,
+      };
+    }) ?? [];
 
   return [
     {
@@ -81,10 +125,10 @@ const tableCols = computed(() => {
 });
 
 const tableRows = computed(() => {
-  return props.submissions.map((submission) => {
+  return submissionObject.value?.submissions.map((submission) => {
     let rowData: any = {};
-    props.columns.forEach((column) => {
-      rowData[column] = submission.data[column] ?? "-";
+    submissionObject.value?.keys.forEach((column) => {
+      rowData[column] = (submission.data as any)[column] ?? "-";
     });
     return {
       ...rowData,
@@ -119,11 +163,17 @@ async function deleteSelected() {
     console.error(error.value);
     return;
   }
-  emits(
-    "delete",
-    selected.value.map((item) => item.id)
-  );
+  deleteSubmissions(selected.value.map((item) => item.id));
   selected.value = [];
+}
+
+function deleteSubmissions(ids: string[]) {
+  if (submissionObject.value) {
+    submissionObject.value.submissions =
+      submissionObject.value.submissions.filter(
+        (submission) => !ids.includes(submission.id)
+      );
+  }
 }
 </script>
 

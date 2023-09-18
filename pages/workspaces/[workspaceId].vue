@@ -63,6 +63,7 @@ import { WorkspaceWithForms } from "~/types";
 
 definePageMeta({
   middleware: "auth",
+  title: "Workspace",
 });
 const dayjs = useDayjs();
 const workspaceId = computed(() => useRoute().params.workspaceId as string);

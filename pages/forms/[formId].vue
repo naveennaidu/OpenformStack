@@ -34,7 +34,7 @@
 import { storeToRefs } from "pinia";
 import { useWorkspaceStore } from "~/store/workspace";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ middleware: "auth", title: "Forms" });
 
 const route = useRoute();
 const router = useRouter();

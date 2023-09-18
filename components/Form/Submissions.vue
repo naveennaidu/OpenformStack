@@ -21,6 +21,7 @@
         v-model="selected"
         :columns="tableCols"
         :rows="tableRows"
+        :loading="loading"
         @select="onSelect"
       />
 
@@ -69,7 +70,9 @@ const submissionObject = ref<{
 const page = ref(1);
 const pageCount = ref(10);
 
+const loading = ref(false);
 async function fetchSubmissions() {
+  loading.value = true;
   const { data } = await useFetch(`/api/forms/${props.formId}/submissions`, {
     method: "GET",
     query: {
@@ -78,6 +81,7 @@ async function fetchSubmissions() {
       isSpam: view.value === "Spam",
     },
   });
+  loading.value = false;
   submissionObject.value = {
     submissions:
       data.value?.submissions.map((submission) => ({

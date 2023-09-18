@@ -1,7 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@sidebase/nuxt-auth", "dayjs-nuxt", "@pinia/nuxt"],
+  modules: [
+    "@nuxt/ui",
+    "@sidebase/nuxt-auth",
+    "dayjs-nuxt",
+    "@pinia/nuxt",
+    "@productdevbook/chatwoot",
+  ],
   extends: ["nuxt-seo-kit"],
   runtimeConfig: {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
@@ -24,5 +30,15 @@ export default defineNuxtConfig({
   },
   colorMode: {
     preference: "light",
+  },
+  chatwoot: {
+    init: {
+      websiteToken: process.env.CHATWOOT_WEBSITE_TOKEN,
+    },
+    settings: {
+      locale: "en",
+      position: "left",
+      launcherTitle: "Chat",
+    },
   },
 });

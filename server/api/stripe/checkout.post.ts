@@ -1,6 +1,6 @@
 import { getServerSession } from "#auth";
 import { z, parseBodyAs } from "@sidebase/nuxt-parse";
-import { stripe } from "@/utils/stripe";
+import { createOrRetrieveCustomer, stripe } from "@/utils/stripe";
 
 const bodySchema = z.object({
   priceId: z.string(),
@@ -11,15 +11,14 @@ export default defineEventHandler(async (event) => {
   const { priceId } = await parseBodyAs(event, bodySchema);
 
   if (!session) {
-    throw createError({ statusMessage: "Unauthenticated", statusCode: 403 });
+    throw createError({ statusMessage: "Unauthenticated", statusCode: 401 });
   }
 
   const { prisma } = event.context;
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user.id,
-    },
+  const user = await createOrRetrieveCustomer({
+    prisma,
+    userId: session.user.id,
   });
 
   if (!user) {
@@ -32,6 +31,8 @@ export default defineEventHandler(async (event) => {
     const stripeSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
+      client_reference_id: user.id,
+      customer: user.stripeCustomerId || undefined,
       line_items: [
         {
           price: priceId,

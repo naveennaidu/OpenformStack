@@ -1,4 +1,4 @@
-import { stripe } from "@/utils/stripe";
+import { manageSubscriptionStatusChange, stripe } from "@/utils/stripe";
 import Stripe from "stripe";
 
 const relevantEvents = new Set([
@@ -9,26 +9,33 @@ const relevantEvents = new Set([
 ]);
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+  const body = await readRawBody(event);
 
   const sig = event.headers.get("stripe-signature");
+  console.log("sig", sig);
+
   const webhookSecret = useRuntimeConfig().STRIPE_WEBHOOK_SECRET;
+  console.log("webhookSecret", webhookSecret);
   let stripeEvent: Stripe.Event;
 
   try {
-    if (!sig || !webhookSecret) return;
+    if (!sig || !webhookSecret || !body) return;
     stripeEvent = stripe.webhooks.constructEvent(
       body,
       sig,
       useRuntimeConfig().STRIPE_WEBHOOK_SECRET
     );
   } catch (err: any) {
+    console.log("err", err);
+
     throw createError({
       statusMessage: "Webhook Error",
       message: err.message,
       statusCode: 400,
     });
   }
+
+  console.log("stripeEvent", stripeEvent);
 
   const { prisma } = event.context;
 
@@ -41,13 +48,33 @@ export default defineEventHandler(async (event) => {
         case "customer.subscription.updated":
         case "customer.subscription.deleted":
           const subscription = stripeEvent.data.object as Stripe.Subscription;
-          console.log("subscription", subscription);
+          console.log("customer.subscription", subscription);
+          await manageSubscriptionStatusChange(
+            prisma,
+            subscription.id,
+            subscription.customer as string
+          );
           break;
         case "checkout.session.completed":
           const checkoutSession = stripeEvent.data
             .object as Stripe.Checkout.Session;
           if (checkoutSession.mode === "subscription") {
             console.log("checkoutSession", checkoutSession);
+            const user = await prisma.user.update({
+              where: {
+                id: checkoutSession.client_reference_id as string,
+              },
+              data: {
+                stripeCustomerId: checkoutSession.customer as string,
+              },
+            });
+
+            const subscriptionId = checkoutSession.subscription;
+            await manageSubscriptionStatusChange(
+              prisma,
+              subscriptionId as string,
+              user?.stripeCustomerId as string
+            );
           }
           break;
         default:

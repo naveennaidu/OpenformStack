@@ -100,6 +100,7 @@
         </div>
       </div>
     </div>
+    <UButton @click="openPortal"> Portal </UButton>
   </div>
 </template>
 
@@ -166,6 +167,15 @@ async function goToCheckout(priceId: string) {
   });
   if (data.value && data.value.stripeSession.url) {
     window.open(data.value.stripeSession.url, "_blank");
+  }
+}
+
+async function openPortal() {
+  const { data } = await useFetch("/api/stripe/portal", {
+    method: "POST",
+  });
+  if (data.value && data.value.url) {
+    window.open(data.value.url, "_blank");
   }
 }
 </script>

@@ -25,14 +25,14 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a
+        <NuxtLink
           v-for="item in navigation"
           :key="item.name"
-          :href="item.href"
-          class="text-sm font-semibold leading-6 text-white"
+          :to="item.href"
+          class="text-sm font-semibold leading-6 text-gray-800"
         >
           {{ item.name }}
-        </a>
+        </NuxtLink>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end"></div>
     </nav>
@@ -76,7 +76,24 @@
 </template>
 
 <script setup lang="ts">
-const navigation: any[] = [];
+const navigation: any[] = [
+  {
+    name: "Features",
+    href: "/features",
+  },
+  {
+    name: "Pricing",
+    href: "/pricing",
+  },
+  {
+    name: "Docs",
+    href: "/docs",
+  },
+  {
+    name: "Blog",
+    href: "/blog",
+  },
+];
 
 const mobileMenuOpen = ref(false);
 </script>

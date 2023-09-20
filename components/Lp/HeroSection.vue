@@ -81,7 +81,7 @@ const selectedTab = ref("html");
 
 const { signIn } = useAuth();
 async function continueWithGoogle() {
-  await signIn("google");
+  await signIn("google", { callbackUrl: "/dashboard" });
 }
 
 const githubIcon = defineComponent({

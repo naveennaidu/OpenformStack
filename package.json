@@ -28,6 +28,7 @@
     "@prisma/client": "5.2.0",
     "@productdevbook/chatwoot": "^1.3.0",
     "@sidebase/nuxt-parse": "^0.3.0",
+    "@stripe/stripe-js": "^2.1.6",
     "@upstash/ratelimit": "^0.4.4",
     "@vercel/analytics": "^1.0.2",
     "@vercel/kv": "^0.2.2",
@@ -35,6 +36,7 @@
     "inngest": "^2.6.0",
     "next-auth": "4.21.1",
     "pinia": "^2.1.6",
-    "resend": "^1.0.0"
+    "resend": "^1.0.0",
+    "stripe": "^13.6.0"
   }
 }

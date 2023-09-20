@@ -13,6 +13,8 @@ export default defineNuxtConfig({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     API_ROUTE_SECRET: process.env.API_ROUTE_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     public: {
       FROM_MAIL: process.env.FROM_MAIL,
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

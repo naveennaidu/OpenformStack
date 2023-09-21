@@ -168,8 +168,8 @@ const priceIds = {
     annually: "price_1NskO4SGPjGwYh1BTiewLkmd",
   },
   production: {
-    monthly: "price_1NskO4SGPjGwYh1B0kEccEiE",
-    annually: "price_1NskO4SGPjGwYh1BTiewLkmd",
+    monthly: "price_1Nskg5SGPjGwYh1BrrzAeaT5",
+    annually: "price_1Nskg4SGPjGwYh1Bw4mLoPcj",
   },
 };
 

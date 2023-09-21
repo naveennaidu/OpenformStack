@@ -79,20 +79,20 @@
 const navigation: any[] = [
   {
     name: "Features",
-    href: "/features",
+    href: "/",
   },
   {
     name: "Pricing",
     href: "/pricing",
   },
-  {
-    name: "Docs",
-    href: "/docs",
-  },
-  {
-    name: "Blog",
-    href: "/blog",
-  },
+  // {
+  //   name: "Docs",
+  //   href: "/docs",
+  // },
+  // {
+  //   name: "Blog",
+  //   href: "/blog",
+  // },
 ];
 
 const mobileMenuOpen = ref(false);

@@ -173,7 +173,7 @@ const tiers = [
   {
     name: "Pro",
     id: "tier-pro",
-    price: { monthly: "$19", annually: "$190" },
+    price: { monthly: "$19", annually: "$199" },
     priceId: {
       monthly: useRuntimeConfig().PRO_MONTHLY_PRICE_ID,
       annually: useRuntimeConfig().PRO_YEARLY_PRICE_ID,

@@ -145,7 +145,7 @@ const tiers = [
   {
     name: "Pro",
     id: "tier-pro",
-    price: { monthly: "$19", annually: "$190" },
+    price: { monthly: "$19", annually: "$199" },
     description: "Best for pro users and agencies.",
     features: [
       "Unlimited forms",

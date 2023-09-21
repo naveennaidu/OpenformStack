@@ -25,7 +25,8 @@ export default defineNuxtConfig({
       // SEO
       siteUrl: process.env.BASE_URL || "https://openformstack.com",
       siteName: "OpenformStack",
-      siteDescription: "Open Source Backend Form",
+      siteDescription:
+        "Open source form backend that allows you to collect form submissions without writing any backend code",
       language: "en",
     },
   },

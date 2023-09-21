@@ -38,15 +38,17 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  name          String?
-  email         String?     @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime    @default(now())
-  account       Account[]
-  sessions      Session[]
-  workspaces    Workspace[] @relation("UserToWorkspace")
+  id               String         @id @default(cuid())
+  name             String?
+  email            String?        @unique
+  emailVerified    DateTime?
+  image            String?
+  createdAt        DateTime       @default(now())
+  account          Account[]
+  sessions         Session[]
+  workspaces       Workspace[]    @relation("UserToWorkspace")
+  stripeCustomerId String?        @unique
+  Subscription     Subscription[]
 }
 
 model VerificationToken {
@@ -99,4 +101,23 @@ model Submission {
   isSpam    Boolean  @default(false)
   form      Form     @relation(fields: [formId], references: [id])
   formId    String
+}
+
+model Subscription {
+  id                 String   @id
+  status             String?
+  priceId            String?
+  quantity           Int?
+  cancelAtPeriodEnd  Boolean?
+  created            String
+  currentPeriodStart String
+  currentPeriodEnd   String
+  endedAt            String?
+  cancelAt           String?
+  canceledAt         String?
+  trialStart         String?
+  trialEnd           String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }

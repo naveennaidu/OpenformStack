@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 pl-2 mt-8"
+      class="text-xs font-semibold text-gray-400 dark:text-gray-400 mb-1 pl-4 mt-8"
     >
       WORKSPACES
     </div>

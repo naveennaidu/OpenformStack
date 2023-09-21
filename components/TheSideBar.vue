@@ -13,11 +13,11 @@ const links = [
     icon: "i-heroicons-home",
     to: "/dashboard",
   },
-  // {
-  //   label: "Settings",
-  //   icon: "i-heroicons-cog",
-  //   to: "/settings",
-  // },
+  {
+    label: "Billing",
+    icon: "i-heroicons-credit-card",
+    to: "/settings/billing",
+  },
 ];
 </script>
 

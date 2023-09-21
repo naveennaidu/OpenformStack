@@ -1,8 +1,9 @@
 <template>
   <div>
     <LpTopNav />
-
-    <slot />
+    <div class="mt-20">
+      <slot />
+    </div>
     <LpFooter />
   </div>
 </template>

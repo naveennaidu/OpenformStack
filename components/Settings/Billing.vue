@@ -86,6 +86,7 @@
           </div>
 
           <UButton
+            v-if="tier.id !== 'tier-free'"
             :aria-describedby="tier.id"
             :variant="tier.mostPopular ? 'solid' : 'outline'"
             size="lg"

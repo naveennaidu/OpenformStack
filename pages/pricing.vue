@@ -8,7 +8,7 @@
         <p
           class="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl"
         >
-          Choose the right plan for&nbsp;you
+          Simple and transparent pricing.
         </p>
       </div>
       <p

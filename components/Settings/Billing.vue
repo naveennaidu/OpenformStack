@@ -162,6 +162,23 @@ const frequencies = [
   { value: "annually", label: "Annually", priceSuffix: "/year" },
 ];
 
+const config = useRuntimeConfig();
+
+const priceIds = {
+  development: {
+    monthly: "price_1NskO4SGPjGwYh1B0kEccEiE",
+    annually: "price_1NskO4SGPjGwYh1BTiewLkmd",
+  },
+  production: {
+    monthly: "price_1Nskg5SGPjGwYh1BrrzAeaT5",
+    annually: "price_1Nskg4SGPjGwYh1Bw4mLoPcj",
+  },
+};
+
+const env = (process.env.NODE_ENV ?? "development") as
+  | "development"
+  | "production";
+
 const tiers = [
   {
     name: "Free",
@@ -176,8 +193,8 @@ const tiers = [
     id: "tier-pro",
     price: { monthly: "$19", annually: "$199" },
     priceId: {
-      monthly: useRuntimeConfig().PRO_MONTHLY_PRICE_ID,
-      annually: useRuntimeConfig().PRO_YEARLY_PRICE_ID,
+      monthly: priceIds[env].monthly,
+      annually: priceIds[env].annually,
     },
     description: "Best for pro use and agencies.",
     features: [

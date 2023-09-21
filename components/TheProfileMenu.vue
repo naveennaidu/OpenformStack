@@ -1,5 +1,6 @@
 <template>
   <UDropdown
+    v-if="user"
     :items="items"
     :ui="{
       width: 'w-60',

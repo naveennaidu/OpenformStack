@@ -162,16 +162,14 @@ const frequencies = [
   { value: "annually", label: "Annually", priceSuffix: "/year" },
 ];
 
-const config = useRuntimeConfig();
-
 const priceIds = {
   development: {
     monthly: "price_1NskO4SGPjGwYh1B0kEccEiE",
     annually: "price_1NskO4SGPjGwYh1BTiewLkmd",
   },
   production: {
-    monthly: "price_1Nskg5SGPjGwYh1BrrzAeaT5",
-    annually: "price_1Nskg4SGPjGwYh1Bw4mLoPcj",
+    monthly: "price_1NskO4SGPjGwYh1B0kEccEiE",
+    annually: "price_1NskO4SGPjGwYh1BTiewLkmd",
   },
 };
 

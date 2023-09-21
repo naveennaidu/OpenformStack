@@ -24,8 +24,6 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({ statusMessage: "User not found", statusCode: 404 });
   }
-  console.log(user);
-  console.log(priceId, useRuntimeConfig().BASE_URL);
 
   try {
     const stripeSession = await stripe.checkout.sessions.create({
@@ -39,10 +37,9 @@ export default defineEventHandler(async (event) => {
           quantity: 1,
         },
       ],
-      success_url: `http://localhost:3000/`,
-      cancel_url: `http://localhost:3000/`,
+      success_url: `${useRuntimeConfig().public.BASE_URL}/settings/billing`,
+      cancel_url: `${useRuntimeConfig().public.BASE_URL}/settings/billing`,
     });
-    console.log(stripeSession);
     if (stripeSession.url) {
       return {
         stripeSession,

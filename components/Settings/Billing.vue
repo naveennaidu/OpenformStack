@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white py-3 sm:py-6">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div v-if="!isSubscribed" class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="mt-16 flex justify-center">
         <RadioGroup
           v-model="frequency"
@@ -26,7 +26,7 @@
         </RadioGroup>
       </div>
       <div
-        class="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3"
+        class="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:max-w-3xl lg:grid-cols-2"
       >
         <div
           v-for="tier in tiers"
@@ -85,28 +85,76 @@
             </ul>
           </div>
 
-          <button
+          <UButton
             :aria-describedby="tier.id"
-            :class="[
-              tier.mostPopular
-                ? 'bg-orange-600 text-white shadow-sm hover:bg-orange-500'
-                : 'text-orange-600 ring-1 ring-inset ring-orange-200 hover:ring-orange-300',
-              'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600',
-            ]"
+            :variant="tier.mostPopular ? 'solid' : 'outline'"
+            size="lg"
+            class="mt-8"
+            block
+            :loading="checkoutLoading"
             @click="goToCheckout((tier.priceId as any)[frequency.value])"
           >
             Upgrade to {{ tier.name }}
-          </button>
+          </UButton>
         </div>
       </div>
     </div>
-    <UButton @click="openPortal"> Portal </UButton>
+    <div v-else class="p-8 ring-1 ring-gray-200 rounded-md">
+      <div class="text-2xl">Thank you for subscribing to OpenformStack!</div>
+      <div class="text-gray-600">
+        You can manage your billing information and subscription from Stripe
+      </div>
+      <div class="grid grid-cols-2 max-w-md my-4">
+        <div>Current plan:</div>
+        <div class="font-semibold">Pro</div>
+        <div>Current Period:</div>
+        <div v-if="activeSubscription" class="font-semibold">
+          {{
+            dayjs(activeSubscription.currentPeriodStart).format("MMM DD, YYYY")
+          }}
+          -
+          {{
+            dayjs(activeSubscription.currentPeriodEnd).format("MMM DD, YYYY")
+          }}
+        </div>
+      </div>
+      <UButton
+        color="primary"
+        variant="solid"
+        size="sm"
+        class="mt-2"
+        @click="openPortal"
+      >
+        Manage subscription
+      </UButton>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/vue";
 import { CheckIcon } from "@heroicons/vue/20/solid";
+
+const dayjs = useDayjs();
+const { data: user } = await useFetch("/api/me");
+
+const isSubscribed = computed(() => {
+  return (
+    user.value &&
+    user.value.user &&
+    user.value.user.Subscription.length > 0 &&
+    user.value.user.Subscription.some((sub: any) => sub.status === "active")
+  );
+});
+
+const activeSubscription = computed(() => {
+  return (
+    user.value &&
+    user.value.user &&
+    user.value.user.Subscription.length > 0 &&
+    user.value.user.Subscription.find((sub: any) => sub.status === "active")
+  );
+});
 
 const frequencies = [
   { value: "monthly", label: "Monthly", priceSuffix: "/month" },
@@ -119,52 +167,39 @@ const tiers = [
     id: "tier-free",
     price: { monthly: "$0", annually: "$0" },
     description: "Free forever",
-    features: ["3 forms", "100 submissions per month"],
+    features: ["Unlimited forms", "100 submissions per month"],
     mostPopular: false,
   },
   {
-    name: "Standard",
-    id: "tier-standard",
-    price: { monthly: "$9", annually: "$90" },
+    name: "Pro",
+    id: "tier-pro",
+    price: { monthly: "$19", annually: "$190" },
     priceId: {
-      monthly: "price_1NsIUrSGPjGwYh1BMGuyC61q",
-      annually: "price_1NsIUrSGPjGwYh1BdNWa6k7a",
+      monthly: useRuntimeConfig().PRO_MONTHLY_PRICE_ID,
+      annually: useRuntimeConfig().PRO_YEARLY_PRICE_ID,
     },
-    description: "Best for personal use and freelancers.",
-    features: [
-      "Unlimited forms",
-      "1000 submissions per month",
-      "Priority support",
-    ],
-    mostPopular: true,
-  },
-  {
-    name: "Plus",
-    id: "tier-plus",
-    price: { monthly: "$29", annually: "$290" },
-    priceId: {
-      monthly: "price_1NsIWVSGPjGwYh1BmU48wGlC",
-      annually: "price_1NsIWVSGPjGwYh1BGDLH1rKW",
-    },
-    description: "Best for businesses",
+    description: "Best for pro use and agencies.",
     features: [
       "Unlimited forms",
       "Unlimited submissions per month",
       "Priority support",
     ],
-    mostPopular: false,
+    mostPopular: true,
   },
 ];
 
 const frequency = ref(frequencies[0]);
 
+const checkoutLoading = ref(false);
 async function goToCheckout(priceId: string) {
+  checkoutLoading.value = true;
   const { data } = await useFetch("/api/stripe/checkout", {
     method: "POST",
     body: JSON.stringify({
       priceId,
     }),
   });
+  checkoutLoading.value = false;
   if (data.value && data.value.stripeSession.url) {
     window.open(data.value.stripeSession.url, "_blank");
   }

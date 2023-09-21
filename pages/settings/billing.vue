@@ -1,5 +1,5 @@
 <template>
-  <div>Billing</div>
+  <SettingsBilling />
 </template>
 
 <script setup lang="ts"></script>

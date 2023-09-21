@@ -41,8 +41,9 @@
           </RadioGroupOption>
         </RadioGroup>
       </div>
+
       <div
-        class="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3"
+        class="isolate mx-auto mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-2xl"
       >
         <div
           v-for="tier in tiers"
@@ -138,32 +139,20 @@ const tiers = [
     id: "tier-free",
     price: { monthly: "$0", annually: "$0" },
     description: "Free forever",
-    features: ["3 forms", "100 submissions per month"],
+    features: ["Unlimited forms", "100 submissions per month"],
     mostPopular: false,
   },
   {
-    name: "Standard",
-    id: "tier-standard",
-    price: { monthly: "$9", annually: "$90" },
-    description: "Best for personal use and freelancers.",
-    features: [
-      "Unlimited forms",
-      "1000 submissions per month",
-      "Priority support",
-    ],
-    mostPopular: true,
-  },
-  {
-    name: "Plus",
-    id: "tier-plus",
-    price: { monthly: "$29", annually: "$290" },
-    description: "Best for businesses",
+    name: "Pro",
+    id: "tier-pro",
+    price: { monthly: "$19", annually: "$190" },
+    description: "Best for pro users and agencies.",
     features: [
       "Unlimited forms",
       "Unlimited submissions per month",
       "Priority support",
     ],
-    mostPopular: false,
+    mostPopular: true,
   },
 ];
 

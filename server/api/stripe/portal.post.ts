@@ -17,13 +17,12 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({ statusMessage: "User not found", statusCode: 404 });
   }
-  console.log(user);
 
   try {
     if (!user.stripeCustomerId) return;
     const { url } = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
-      return_url: `http://localhost:3000/`,
+      return_url: `${useRuntimeConfig().public.BASE_URL}/settings/billing`,
     });
     return { url };
   } catch (error: any) {

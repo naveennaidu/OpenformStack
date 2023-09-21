@@ -14,9 +14,9 @@ const links = [
     to: "/dashboard",
   },
   {
-    label: "Settings",
-    icon: "i-heroicons-cog",
-    to: "/settings",
+    label: "Billing",
+    icon: "i-heroicons-credit-card",
+    to: "/settings/billing",
   },
 ];
 </script>

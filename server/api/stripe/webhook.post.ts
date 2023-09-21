@@ -12,10 +12,8 @@ export default defineEventHandler(async (event) => {
   const body = await readRawBody(event);
 
   const sig = event.headers.get("stripe-signature");
-  console.log("sig", sig);
 
   const webhookSecret = useRuntimeConfig().STRIPE_WEBHOOK_SECRET;
-  console.log("webhookSecret", webhookSecret);
   let stripeEvent: Stripe.Event;
 
   try {
@@ -34,12 +32,7 @@ export default defineEventHandler(async (event) => {
       statusCode: 400,
     });
   }
-
-  console.log("stripeEvent", stripeEvent);
-
   const { prisma } = event.context;
-
-  console.log("stripeEvent", stripeEvent);
 
   if (relevantEvents.has(stripeEvent.type)) {
     try {
@@ -48,7 +41,6 @@ export default defineEventHandler(async (event) => {
         case "customer.subscription.updated":
         case "customer.subscription.deleted":
           const subscription = stripeEvent.data.object as Stripe.Subscription;
-          console.log("customer.subscription", subscription);
           await manageSubscriptionStatusChange(
             prisma,
             subscription.id,
@@ -59,7 +51,6 @@ export default defineEventHandler(async (event) => {
           const checkoutSession = stripeEvent.data
             .object as Stripe.Checkout.Session;
           if (checkoutSession.mode === "subscription") {
-            console.log("checkoutSession", checkoutSession);
             const user = await prisma.user.update({
               where: {
                 id: checkoutSession.client_reference_id as string,

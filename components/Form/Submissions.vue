@@ -11,7 +11,10 @@
       >
         Delete
       </UButton>
-      <USelectMenu v-model="view" :options="['Inbox', 'Spam']"> </USelectMenu>
+      <div class="flex items-center gap-x-2">
+        <FormCsvDownload :form-id="formId" />
+        <USelectMenu v-model="view" :options="['Inbox', 'Spam']"> </USelectMenu>
+      </div>
     </div>
     <div
       class="overflow-hidden shadow ring-1 ring-black dark:ring-gray-700 ring-opacity-5 sm:rounded-lg"

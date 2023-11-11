@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
           quantity: 1,
         },
       ],
+      allow_promotion_codes: true,
       success_url: `${useRuntimeConfig().public.BASE_URL}/settings/billing`,
       cancel_url: `${useRuntimeConfig().public.BASE_URL}/settings/billing`,
     });

@@ -4,7 +4,7 @@ import { Resend } from "resend";
 const resend = new Resend(useRuntimeConfig().RESEND_API_KEY);
 
 export default inngest.createFunction(
-  { name: "Respondent Email Notification" },
+  { id: "Respondent Email Notification" },
   { event: "app/email.respondentNotification" },
   async ({ event }) => {
     const fromName = event.data.fromName;

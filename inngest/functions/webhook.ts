@@ -1,7 +1,7 @@
 import { inngest } from "@/inngest/client";
 
 export default inngest.createFunction(
-  { name: "Webhook" },
+  { id: "Webhook" },
   { event: "app/webhook" },
   async ({ event }) => {
     const webhookUrl = event.data.webhookUrl;

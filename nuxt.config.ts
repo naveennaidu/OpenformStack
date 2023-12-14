@@ -8,7 +8,19 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@productdevbook/chatwoot",
   ],
-  extends: ["nuxt-seo-kit"],
+  app: {
+    head: {
+      title: "OpenformStack",
+      meta: [
+        {
+          name: "description",
+          content:
+            "Open source form backend that allows you to collect form submissions without writing any backend code",
+        },
+        { charset: "utf-8" },
+      ],
+    },
+  },
   runtimeConfig: {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     API_ROUTE_SECRET: process.env.API_ROUTE_SECRET,

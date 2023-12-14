@@ -1,3 +1,3 @@
 import { Inngest } from "inngest";
 
-export const inngest = new Inngest({ name: "OpenformStack" });
+export const inngest = new Inngest({ id: "OpenformStack" });

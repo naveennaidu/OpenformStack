@@ -5,7 +5,7 @@ import { isEmail } from "~/utils";
 const resend = new Resend(useRuntimeConfig().RESEND_API_KEY);
 
 export default inngest.createFunction(
-  { name: "Self Email Notification" },
+  { id: "Self Email Notification" },
   { event: "app/email.selfNotification" },
   async ({ event }) => {
     const userEmails = event.data.emails;

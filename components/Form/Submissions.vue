@@ -25,6 +25,7 @@
         :columns="tableCols"
         :rows="tableRows"
         :loading="loading"
+        :ui="{ td: { base: '' } }"
         @select="onSelect"
       />
 
@@ -54,8 +55,8 @@
 </template>
 
 <script setup lang="ts">
-import { Submission } from "@prisma/client";
-import { Pagination } from "~/types";
+import type { Submission } from "@prisma/client";
+import type { Pagination } from "~/types";
 
 const props = defineProps({
   formId: {

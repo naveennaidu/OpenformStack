@@ -103,63 +103,20 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  // Check for spam
-  const isSpam = Object.entries(parsedBody).some(
-    ([key, value]) => key.startsWith("_") && value
-  );
-
   const submission = await prisma.submission.create({
     data: {
       formId,
       data: body,
-      isSpam,
     },
   });
 
-  const userEmails = form.workspace.users
-    .map((user) => user.email)
-    .filter((email): email is string => Boolean(email));
-  // self email notification
-  if (form.selfEmailNotification && !isSpam) {
-    await inngest.send({
-      name: "app/email.selfNotification",
-      data: {
-        emails: userEmails,
-        formName: form.name,
-        body,
-      },
-    });
-  }
-
-  // respondent email notification
-  if (form.respondentEmailNotification && !isSpam) {
-    if (body.email && isEmail(body.email)) {
-      await inngest.send({
-        name: "app/email.respondentNotification",
-        data: {
-          fromName: form.fromName ?? "OpenformStack",
-          to: body.email,
-          subject: form.subject ?? "Thank you for your submission",
-          message:
-            form.message ??
-            "Thanks for reaching out! we'll get back to you as soon as possible.",
-          replyTo: userEmails ?? [],
-        },
-      });
-    }
-  }
-
-  // webhook
-  if (form.webhookEnabled && form.webhookUrl && !isSpam) {
-    await inngest.send({
-      name: "app/webhook",
-      data: {
-        webhookUrl: form.webhookUrl,
-        formName: form.name,
-        submission,
-      },
-    });
-  }
+  await inngest.send({
+    name: "app/form.backgroundJob",
+    data: {
+      formId,
+      submissionId: submission.id,
+    },
+  });
 
   return sendRedirect(
     event,

@@ -1,5 +1,3 @@
-import selfEmailNotification from "./selfEmailNotification";
-import respondentEmailNotification from "./respondentEmailNotification";
-import webhook from "./webhook";
+import formBackgroundJob from "./formBackgroundJob";
 
-export default [selfEmailNotification, respondentEmailNotification, webhook];
+export default [formBackgroundJob];

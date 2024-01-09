@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useWorkspaceStore } from "~/store/workspace";
-import { WorkspaceWithForms } from "~/types";
+import type { WorkspaceWithForms } from "~/types";
 
 definePageMeta({
   middleware: "auth",

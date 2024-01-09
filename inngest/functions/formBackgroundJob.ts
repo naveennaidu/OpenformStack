@@ -60,7 +60,6 @@ export default inngest.createFunction(
           },
         }
       );
-      console.log("spam", spam);
 
       if (isSpam || spam) {
         await prisma.submission.update({
@@ -82,11 +81,12 @@ export default inngest.createFunction(
     const userEmails = form.workspace.users
       .map((user) => user.email)
       .filter((email): email is string => Boolean(email));
+    const selfEmails = form.selfEmails;
     if (form.selfEmailNotification) {
       await step.run("app/email.selfNotification", async () => {
         await resend.emails.send({
           from: `OpenformStack <${useRuntimeConfig().public.FROM_MAIL}>`,
-          to: userEmails,
+          to: userEmails.concat(selfEmails),
           subject: `New submission for ${formName}`,
           html: `
         ${Object.entries(body)

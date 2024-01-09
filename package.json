@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare",
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:migrate:generate": "npx prisma generate",
+    "prisma:reset": "npx prisma migrate reset",
     "prisma:studio": "npx prisma studio"
   },
   "devDependencies": {

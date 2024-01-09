@@ -1,10 +1,11 @@
 import { getServerSession } from "#auth";
-import { z, parseBodyAs, parseParamsAs } from "@sidebase/nuxt-parse";
+import z from "zod";
 
 const bodySchema = z.object({
   name: z.string().optional(),
   closed: z.boolean().optional(),
   selfEmailNotification: z.boolean().optional(),
+  selfEmails: z.array(z.string()),
   respondentEmailNotification: z.boolean().optional(),
   fromName: z.string().nullable().optional(),
   subject: z.string().nullable().optional(),
@@ -21,8 +22,8 @@ const paramSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event);
-  const body = await parseBodyAs(event, bodySchema);
-  const { formId } = parseParamsAs(event, paramSchema);
+  const body = await readValidatedBody(event, bodySchema.parse);
+  const { formId } = await getValidatedRouterParams(event, paramSchema.parse);
 
   if (!session) {
     throw createError({ statusMessage: "Unauthenticated", statusCode: 403 });

@@ -69,11 +69,12 @@ model Workspace {
 }
 
 model Form {
-  id                    String  @id @default(cuid())
+  id                    String   @id @default(cuid())
   name                  String
-  closed                Boolean @default(false)
+  closed                Boolean  @default(false)
   // send email to self when form is submitted
-  selfEmailNotification Boolean @default(true)
+  selfEmailNotification Boolean  @default(true)
+  selfEmails            String[]
 
   // send email to respondent when form is submitted
   respondentEmailNotification Boolean @default(false)

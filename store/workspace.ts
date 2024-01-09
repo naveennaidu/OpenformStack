@@ -1,4 +1,4 @@
-import { WorkspaceWithForms } from "~/types";
+import type { WorkspaceWithForms } from "~/types";
 
 export const useWorkspaceStore = defineStore("workspace", {
   state: () => ({

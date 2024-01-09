@@ -136,6 +136,18 @@
                 </UFormGroup>
                 <UToggle v-model="formData.selfEmailNotification" />
               </div>
+              <UFormGroup
+                v-if="formData.selfEmailNotification"
+                label="Emails"
+                description="Add more emails to get notified. Separate each email by comma"
+                class="mt-2 p-3 ring-1 ring-gray-200 rounded"
+              >
+                <UInput
+                  v-model="formData.selfEmails"
+                  placeholder="example1@test.com,example2@test.com"
+                  class="mt-2"
+                />
+              </UFormGroup>
             </div>
             <div class="col-span-full">
               <div class="flex items-center justify-between">
@@ -199,6 +211,7 @@ const formData = ref({
   name: "",
   closed: false,
   selfEmailNotification: true,
+  selfEmails: "" as string,
   respondentEmailNotification: false,
   customRedirect: false,
   customRedirectUrl: undefined as string | undefined,
@@ -211,6 +224,7 @@ onMounted(() => {
   formData.value.name = props.form.name;
   formData.value.closed = props.form.closed;
   formData.value.selfEmailNotification = props.form.selfEmailNotification;
+  formData.value.selfEmails = props.form.selfEmails.join(",");
   formData.value.respondentEmailNotification =
     props.form.respondentEmailNotification;
   formData.value.customRedirect = props.form.customRedirect ?? false;
@@ -247,6 +261,9 @@ async function updateNotificationForm() {
   notificationLoading.value = true;
   await workspaceStore.updateForm(props.form.id, {
     selfEmailNotification: formData.value.selfEmailNotification,
+    selfEmails: formData.value.selfEmails
+      ? formData.value.selfEmails.split(",").map((email) => email.trim())
+      : [],
     respondentEmailNotification: formData.value.respondentEmailNotification,
     fromName: formData.value.fromName,
     subject: formData.value.subject,

@@ -5,7 +5,7 @@ const bodySchema = z.object({
   name: z.string().optional(),
   closed: z.boolean().optional(),
   selfEmailNotification: z.boolean().optional(),
-  selfEmails: z.array(z.string()),
+  selfEmails: z.array(z.string()).optional(),
   respondentEmailNotification: z.boolean().optional(),
   fromName: z.string().nullable().optional(),
   subject: z.string().nullable().optional(),

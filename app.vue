@@ -8,7 +8,7 @@
 useHead({
   script: [
     {
-      src: "https://plausible-analytics-production-a95c.up.railway.app/js/script.js",
+      src: "https://plausible.io/js/script.js",
       defer: true,
       "data-domain": "openformstack.com",
     },
